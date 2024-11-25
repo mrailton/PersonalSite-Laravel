@@ -41,4 +41,11 @@ class ShowArticleTest extends TestCase
             ->assertStatus(200)
             ->assertSee($article->title);
     }
+
+    #[Test]
+    public function a_visitor_can_not_view_an_article_that_does_not_exist(): void
+    {
+        $this->get(route('articles.show', ['article' => 'does-not-exist']))
+            ->assertStatus(404);
+    }
 }
