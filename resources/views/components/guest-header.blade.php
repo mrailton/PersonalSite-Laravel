@@ -27,7 +27,7 @@
 
                 @auth()
                     <li class="px-3 cursor-pointer hover:bg-white flex items-center hover:text-indigo-600" :class="showMenu && 'py-1'">
-                        <a href="{{ route('admin.dashboard') }}">Admin</a>
+                        <a href="{{ route('index') }}">Admin</a>
                     </li>
                 @endauth
             </ul>

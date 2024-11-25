@@ -41,5 +41,10 @@ p {
     background: #718096;
 }
 
+.shiki {
+    padding: 10px;
+    border-radius: 15px;
+}
+
 @tailwind components;
 @tailwind utilities;
