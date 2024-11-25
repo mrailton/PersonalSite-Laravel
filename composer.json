@@ -63,6 +63,10 @@
         ],
         "remove-docblocks": [
             "@php ./vendor/bin/shift-cli run remove-docblocks"
+        ],
+        "tidy": [
+            "@composer run remove-docblocks",
+            "@composer run pint"
         ]
     },
     "extra": {
