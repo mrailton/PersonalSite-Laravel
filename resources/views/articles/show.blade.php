@@ -1,4 +1,4 @@
-<x-layout.guest>
+<x-layout.app>
     <x-slot name="head">
         <meta name="twitter:card" content="summary"/>
         <meta name="twitter:site" content="@markrailton84"/>
@@ -19,4 +19,4 @@
             {!! $html !!}
         </div>
     </div>
-</x-layout.guest>
+</x-layout.app>

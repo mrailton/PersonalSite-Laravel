@@ -1,4 +1,4 @@
-<x-layout.guest>
+<x-layout.app>
     <section>
         <div class="max-w-3xl px-6 text-center mx-auto">
             <h2 class="text-3xl font-semibold text-gray-800">Hi there, <span class="bg-indigo-600 text-white px-1">I'm Mark</span>.</h2>
@@ -58,4 +58,4 @@
             </div>
         </div>
     </section>
-</x-layout.guest>
+</x-layout.app>

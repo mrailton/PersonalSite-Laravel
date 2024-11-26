@@ -17,6 +17,6 @@ class GuestHeader extends Component
 
     public function render(): View|Closure|string
     {
-        return view('components.guest-header');
+        return view('components.header');
     }
 }

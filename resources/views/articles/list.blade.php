@@ -1,4 +1,4 @@
-<x-layout.guest>
+<x-layout.app>
      <section>
         <div class="flex flex-col items-center justify-center">
             <h1 class="text-3xl font-semibold text-gray-800 mb-8">Blog Articles</h1>
@@ -10,4 +10,4 @@
             {{ $articles->links('pagination.articles') }}
         </div>
     </section>
-</x-layout.guest>
+</x-layout.app>
