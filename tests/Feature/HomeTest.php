@@ -2,8 +2,13 @@
 
 declare(strict_types=1);
 
-test('the homepage loads', function (): void {
-    $response = $this->get(route('index'));
+use function Pest\Laravel\get;
 
-    $response->assertStatus(200)->assertSee('Mark Railton')->assertViewIs('index');
+test('the homepage loads', function (): void {
+    $response = get(route('index'));
+
+    expect($response)
+        ->status()->toBe(200)
+        ->content()->toContain('Mark Railton')
+        ->assertViewIs('index');
 });
