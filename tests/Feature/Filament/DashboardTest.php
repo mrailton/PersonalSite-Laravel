@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+
 use function Pest\Laravel\actingAs;
 
 test('the dashboard renders for an authenticated user', function (): void {
