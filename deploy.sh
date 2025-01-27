@@ -20,7 +20,7 @@ npm prune --production
 composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
 # Restart PHP-FPM
-sudo systemctl restart php8.4-fpm
+sudo systemctl restart php8.4-fpm.service
 
 # Run specific laravel commands to get application ready
 php artisan optimize:clear
