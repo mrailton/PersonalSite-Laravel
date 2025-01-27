@@ -56,4 +56,13 @@ jobs:
           USER: ${{ secrets.USER }}
           HOST: ${{ secrets.HOST }}
           DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
-        run: ssh -i ~/.ssh/id_rsa $USER@$HOST 'bash -s' < ./deploy.sh
+        run: |
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          echo "Host *" > ~/.ssh/config
+          echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+          echo "  UserKnownHostsFile /dev/null" >> ~/.ssh/config
+
+          ssh -i ~/.ssh/id_rsa $USER@$HOST 'bash -s' < ./deploy.sh
