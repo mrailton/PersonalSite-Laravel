@@ -66,4 +66,4 @@ jobs:
           echo "  StrictHostKeyChecking no" >> ~/.ssh/config
           echo "  UserKnownHostsFile /dev/null" >> ~/.ssh/config
 
-          ssh -i ~/.ssh/id_rsa $USER@$HOST 'bash -s' < ./deploy.sh
+          ssh -i ~/.ssh/id_rsa $USER@$HOST 'cd /var/www/personalsite && sh deploy.sh'
