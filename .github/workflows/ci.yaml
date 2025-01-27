@@ -51,6 +51,7 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push' && success()
     steps:
+      - uses: actions/checkout@v4
       - name: Configure SSH
         env:
           USER: ${{ secrets.USER }}
@@ -61,17 +62,9 @@ jobs:
           echo "$DEPLOY_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-          cat >>~/.ssh/config <<END
-          Host prod
-            HostName $SSH_HOST
-            User $SSH_USER
-            IdentityFile ~/.ssh/id_rsa
-            StrictHostKeyChecking no
-          END
-
           echo "Host *" > ~/.ssh/config
           echo "  StrictHostKeyChecking no" >> ~/.ssh/config
           echo "  UserKnownHostsFile /dev/null" >> ~/.ssh/config
 
-      - name: Deploy Code
-        run: ssh prod "bash -s" < ./deploy.sh
+      - name: Deploy Application
+        run: ssh -i ~/.ssh/id_rsa $USER@$HOST 'bash -s' < ./deploy.sh
