@@ -14,7 +14,7 @@ git pull origin main
 # Build assets
 npm ci
 npm run build
-npm prune --production
+npm prune --omit=dev
 
 # Install PHP packages
 composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
