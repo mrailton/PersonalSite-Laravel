@@ -9,6 +9,7 @@ cd /var/www/personalsite
 php artisan down
 
 # pull changes
+git stash
 git pull origin main
 
 # Build assets
