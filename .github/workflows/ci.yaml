@@ -52,7 +52,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push' && success()
     steps:
       - uses: actions/checkout@v4
-      - name: Configure SSH
+      - name: Deploy Application
         env:
           USER: ${{ secrets.USER }}
           HOST: ${{ secrets.HOST }}
