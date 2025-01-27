@@ -1,6 +1,6 @@
 #!/bin/bash
 
-printf "\nInitiating deploy procedure:\n"
+printf "\nInitiating Deploy Procedure:\n"
 
 # Change into app dir
 cd /var/www/personalsite
