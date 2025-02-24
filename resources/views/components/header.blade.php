@@ -1,6 +1,6 @@
 <header class="bg-indigo-600">
     <nav class="border-b">
-        <div x-data="{showMenu : false}" class="container max-w-screen-2xl mx-auto flex justify-between h-14 sm:text-gray-700 md:text-white">
+        <div x-data="{showMenu : false}" class="container max-w-(--breakpoint-2xl) mx-auto flex justify-between h-14 sm:text-gray-700 md:text-white">
             <div class="flex items-center text-white mr-6">
                 <a class="flex items-center text-white pl-4 " href="{{ route('index') }}">
                     <svg class="h-6 w-6 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -12,7 +12,7 @@
                 </a>
             </div>
 
-            <button @click="showMenu = !showMenu" class="block md:hidden text-gray-700 p-2 rounded hover:border focus:border focus:bg-gray-400 my-2 mr-5" type="button" aria-controls="navbar-main" aria-expanded="false" aria-label="Toggle navigation">
+            <button @click="showMenu = !showMenu" class="block md:hidden text-gray-700 p-2 rounded-sm hover:border focus:border focus:bg-gray-400 my-2 mr-5" type="button" aria-controls="navbar-main" aria-expanded="false" aria-label="Toggle navigation">
                 <svg class="w-5 h-5" fill="none" stroke="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
 
