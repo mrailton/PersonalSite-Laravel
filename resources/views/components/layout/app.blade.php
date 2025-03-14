@@ -9,6 +9,8 @@
 
     <link rel="shortcut icon" href="/img/favicon/favicon.ico">
     <link rel="me" href="https://phpc.social/@markrailton">
+
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="24aaadbb-aa9c-409c-a56d-0ed2415bb121"></script>
     <title>Mark Railton</title>
 
     {{ $head ?? '' }}
