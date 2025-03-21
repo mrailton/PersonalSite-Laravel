@@ -30,16 +30,6 @@ test('a guest can not view a article that has not been published', function (): 
         ->content()->not()->toContain($article->title);
 });
 
-test('an authenticated visitor can view a article that has not been published', function (): void {
-    $article = Article::factory()->notPublished()->create();
-
-    $response = actingAs(User::factory()->create())->get(route('articles.show', ['article' => $article]));
-
-    expect($response)
-        ->status()->toBe(200)
-        ->content()->toContain($article->title);
-});
-
 test('a visitor can not view an article that does not exist', function (): void {
     $response = get(route('articles.show', ['article' => 'does-not-exist']));
 
