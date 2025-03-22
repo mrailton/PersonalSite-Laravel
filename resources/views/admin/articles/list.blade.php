@@ -33,10 +33,9 @@
                                 </td>
                             </tr>
                         @endforeach
-
-                        <!-- More people... -->
                         </tbody>
                     </table>
+                    {{ $articles->links('pagination.articles') }}
                 </div>
             </div>
         </div>

@@ -15,7 +15,7 @@ class ListArticlesController
      */
     public function __invoke(Request $request): View
     {
-        $articles = Article::query()->get();
+        $articles = Article::query()->paginate(10);
 
         return view('admin.articles.list', ['articles' => $articles]);
     }
