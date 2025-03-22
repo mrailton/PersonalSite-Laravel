@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\Articles\ListArticlesController as AdminListArtic
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Articles\ListArticlesController;
 use App\Http\Controllers\Articles\ShowArticleController;
+use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\IndexController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,4 +20,8 @@ Route::group(['prefix' => '/admin'], function (): void {
     Route::group(['prefix' => '/articles'], function (): void {
         Route::get('/', AdminListArticlesController::class)->name('admin.articles.list');
     });
+});
+
+Route::group(['prefix' => '/auth', 'as' => 'auth.'], function (): void {
+    Route::post('/logout', LogoutController::class)->name('logout');
 });
