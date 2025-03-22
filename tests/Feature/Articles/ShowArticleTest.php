@@ -2,37 +2,35 @@
 
 declare(strict_types=1);
 
+namespace Tests\Feature\Articles;
+
 use App\Models\Article;
-use App\Models\User;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
-use function Pest\Laravel\actingAs;
-use function Pest\Laravel\get;
+class ShowArticleTest extends TestCase
+{
+    #[Test]
+    public function visitor_can_view_a_published_article(): void
+    {
+        $article = Article::factory()->published()->create();
 
-test('a visitor can view a published article', function (): void {
-    $article = Article::factory()->published()->create();
+        $response = $this->get(route('articles.show', ['article' => $article]));
 
-    $response = get(route('articles.show', ['article' => $article]));
+        $response->assertStatus(200)
+            ->assertSee($article->title)
+            ->assertSee($article->published_at->format('jS F Y'));
+    }
 
-    expect($response)
-        ->status()->toBe(200)
-        ->content()
-        ->toContain($article->title)
-        ->toContain($article->published_at->format('jS F Y'));
-});
 
-test('a guest can not view a article that has not been published', function (): void {
-    $article = Article::factory()->notPublished()->create();
+    #[Test]
+    public function guest_cannot_view_an_unpublished_article(): void
+    {
+        $article = Article::factory()->notPublished()->create();
 
-    $response = get(route('articles.show', ['article' => $article]));
+        $response = $this->get(route('articles.show', ['article' => $article]));
 
-    expect($response)
-        ->status()->toBe(404)
-        ->content()->not()->toContain($article->title);
-});
-
-test('a visitor can not view an article that does not exist', function (): void {
-    $response = get(route('articles.show', ['article' => 'does-not-exist']));
-
-    expect($response)
-        ->status()->toBe(404);
-});
+        $response->assertStatus(404)
+            ->assertDontSee($article->title);
+    }
+}

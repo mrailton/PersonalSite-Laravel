@@ -2,55 +2,60 @@
 
 declare(strict_types=1);
 
+namespace Tests\Feature\Articles;
+
 use App\Models\Article;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
-use function Pest\Laravel\get;
+class ListArticlesTest extends TestCase
+{
+    #[Test]
+    public function visitor_can_view_list_of_published_articles(): void
+    {
+        $publishedArticles = Article::factory()->published()->count(4)->create();
+        $notPublishedArticles = Article::factory()->notPublished()->count(2)->create();
 
-test('a visitor can view a list of published articles', function (): void {
-    $publishedArticles = Article::factory()->published()->count(4)->create();
-    $notPublishedArticles = Article::factory()->notPublished()->count(2)->create();
+        $response = $this->get(route('articles.list'));
 
-    $response = get(route('articles.list'));
+        $response->assertStatus(200)
+            ->assertSee('Blog Articles');
 
-    expect($response)
-        ->status()->toBe(200)
-        ->content()->toContain('Blog Articles');
+        foreach ($publishedArticles as $article) {
+            $response->assertSee($article->title);
+        }
 
-    $publishedArticles->each(
-        fn ($article) => expect($response->content())->toContain($article->title)
-    );
+        foreach ($notPublishedArticles as $article) {
+            $response->assertDontSee($article->title);
+        }
 
-    $notPublishedArticles->each(
-        fn ($article) => expect($response->content())->not()->toContain($article->title)
-    );
+        $response->assertDontSee('Newer')
+            ->assertDontSee('Older');
+    }
 
-    expect($response->content())
-        ->not()->toContain('Newer')
-        ->not()->toContain('Older');
-});
+    #[Test]
+    public function pagination_is_not_shown_for_fewer_than_10_published_articles(): void
+    {
+        Article::factory()->published()->count(4)->create();
 
-test('pagination is not shown for fewer than 10 published articles', function (): void {
-    Article::factory()->published()->count(4)->create();
+        $response = $this->get(route('articles.list'));
 
-    $response = get(route('articles.list'));
+        $response->assertStatus(200)
+            ->assertSee('Blog Articles')
+            ->assertDontSee('Newer')
+            ->assertDontSee('Older');
+    }
 
-    expect($response)
-        ->status()->toBe(200)
-        ->content()
-        ->toContain('Blog Articles')
-        ->not()->toContain('Newer')
-        ->not()->toContain('Older');
-});
+    #[Test]
+    public function pagination_is_shown_for_more_than_10_published_articles(): void
+    {
+        Article::factory()->published()->count(12)->create();
 
-test('pagination is shown for more than 10 published articles', function (): void {
-    Article::factory()->published()->count(12)->create();
+        $response = $this->get(route('articles.list'));
 
-    $response = get(route('articles.list'));
-
-    expect($response)
-        ->status()->toBe(200)
-        ->content()
-        ->toContain('Blog Articles')
-        ->toContain('Newer')
-        ->toContain('Older');
-});
+        $response->assertStatus(200)
+            ->assertSee('Blog Articles')
+            ->assertSee('Newer')
+            ->assertSee('Older');
+    }
+}
