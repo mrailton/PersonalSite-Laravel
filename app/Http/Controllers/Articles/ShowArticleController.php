@@ -23,7 +23,7 @@ class ShowArticleController
             abort(404);
         }
 
-        if ((null === $article->published_at || $article->published_at > now()) && ! $request->user()) {
+        if ((null === $article->published_at || $article->published_at > now()) && !$request->user()) {
             abort(404);
         }
 
