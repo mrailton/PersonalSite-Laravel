@@ -36,4 +36,17 @@ class LoginTest extends TestCase
         $response->assertRedirect(route('admin.dashboard'))
             ->assertSessionHasNoErrors();
     }
+
+    #[Test]
+    public function user_can_not_login_with_incorrect_password(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post(route('auth.login'), [
+            'email' => $user->email,
+            'password' => 'wrong-password',
+        ]);
+
+        $response->assertSessionHasErrors(['email']);
+    }
 }
