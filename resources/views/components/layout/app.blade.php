@@ -23,5 +23,8 @@
 <main class="py-12">
     {{ $slot }}
 </main>
+
+@stack('scripts')
+
 </body>
 </html>

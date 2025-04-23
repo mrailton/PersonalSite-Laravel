@@ -9,9 +9,9 @@
         "@tailwindcss/vite": "^4.1.4",
         "alpinejs": "^3.14.9",
         "concurrently": "^9.0.1",
+        "highlight.js": "^11.11.1",
         "laravel-vite-plugin": "^1.0",
         "postcss": "^8.4.47",
-        "shiki": "^3.3.0",
         "tailwindcss": "^4.1.4",
         "vite": "^6.3.2"
     }
