@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@import "highlight.js/styles/github-dark.css";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../resources/views/*.blade.php';
@@ -52,5 +51,9 @@
 
     ::-webkit-scrollbar-thumb:hover {
         background: #718096;
+    }
+
+    .shiki {
+        padding: 10px;
     }
 }

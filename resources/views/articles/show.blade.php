@@ -19,14 +19,4 @@
             {!! $html !!}
         </div>
     </div>
-
-    @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                document.querySelectorAll('pre code').forEach((block) => {
-                    hljs.highlightElement(block);
-                });
-            });
-        </script>
-    @endpush
 </x-layout.app>
