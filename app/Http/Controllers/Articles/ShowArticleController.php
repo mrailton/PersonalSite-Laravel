@@ -8,10 +8,7 @@ use App\Models\Article;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use League\CommonMark\Environment\Environment;
-use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
-use League\CommonMark\MarkdownConverter;
-use Spatie\CommonMarkShikiHighlighter\HighlightCodeExtension;
+use Spatie\LaravelMarkdown\MarkdownRenderer;
 
 class ShowArticleController
 {
@@ -32,12 +29,8 @@ class ShowArticleController
 
     private function convertToHtml(string $markdown)
     {
-        $environment = new Environment()
-            ->addExtension(new CommonMarkCoreExtension())
-            ->addExtension(new HighlightCodeExtension(theme: 'dracula'));
-
-        $markdownConverter = new MarkdownConverter($environment);
-
-        return $markdownConverter->convert($markdown);
+        return app(MarkdownRenderer::class)
+            ->highlightTheme('dracula')
+            ->toHtml($markdown);
     }
 }
