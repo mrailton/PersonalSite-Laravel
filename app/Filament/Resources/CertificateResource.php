@@ -74,7 +74,8 @@ class CertificateResource extends Resource
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('issued_on', 'desc');
     }
 
     public static function getPages(): array
