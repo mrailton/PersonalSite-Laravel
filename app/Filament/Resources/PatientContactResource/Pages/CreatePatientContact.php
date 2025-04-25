@@ -10,4 +10,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreatePatientContact extends CreateRecord
 {
     protected static string $resource = PatientContactResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

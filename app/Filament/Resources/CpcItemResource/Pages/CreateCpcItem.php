@@ -10,4 +10,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateCpcItem extends CreateRecord
 {
     protected static string $resource = CpcItemResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
