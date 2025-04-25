@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "62210bbc7d78600765327375502a47bf",
+    "content-hash": "4e9348be015c3b8e7477e50f23c23fec",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -8058,52 +8058,6 @@
                 "source": "https://github.com/Jean85/pretty-package-versions/tree/2.1.1"
             },
             "time": "2025-03-19T14:43:43+00:00"
-        },
-        {
-            "name": "laravel-shift/cli",
-            "version": "v0.3.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/laravel-shift/cli.git",
-                "reference": "3880b04b1719a96a5ce023da1b31b8f8ec2d1edc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laravel-shift/cli/zipball/3880b04b1719a96a5ce023da1b31b8f8ec2d1edc",
-                "reference": "3880b04b1719a96a5ce023da1b31b8f8ec2d1edc",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^8.1"
-            },
-            "bin": [
-                "builds/shift-cli"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Shift\\Cli\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "A CLI tool for running automated tasks from Shift",
-            "keywords": [
-                "automation",
-                "cli",
-                "code",
-                "laravel",
-                "php",
-                "refactor"
-            ],
-            "support": {
-                "issues": "https://github.com/laravel-shift/cli/issues",
-                "source": "https://github.com/laravel-shift/cli/tree/v0.3.1"
-            },
-            "abandoned": true,
-            "time": "2024-06-14T13:55:37+00:00"
         },
         {
             "name": "laravel/pail",

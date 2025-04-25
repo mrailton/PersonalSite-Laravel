@@ -13,7 +13,6 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "laravel-shift/cli": "^0.3.1",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
         "mockery/mockery": "^1.6",
@@ -61,13 +60,6 @@
         ],
         "pint": [
             "@php ./vendor/bin/pint"
-        ],
-        "remove-docblocks": [
-            "@php ./vendor/bin/shift-cli run remove-docblocks"
-        ],
-        "tidy": [
-            "@composer run remove-docblocks",
-            "@composer run pint"
         ]
     },
     "extra": {
