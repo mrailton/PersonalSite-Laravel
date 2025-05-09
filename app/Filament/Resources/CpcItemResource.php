@@ -83,6 +83,8 @@ class CpcItemResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('name')
+                    ->sortable(),
                 TextColumn::make('item_type')
                     ->sortable(),
                 TextColumn::make('date')
