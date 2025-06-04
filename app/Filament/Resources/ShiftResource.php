@@ -6,6 +6,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\CPGOrganisation;
 use App\Filament\Resources\ShiftResource\Pages;
+use App\Filament\Resources\ShiftResource\RelationManagers\PatientContactsRelationManager;
 use App\Models\Shift;
 use DateTime;
 use Filament\Forms\Components\Checkbox;
@@ -160,7 +161,7 @@ class ShiftResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PatientContactsRelationManager::class,
         ];
     }
 

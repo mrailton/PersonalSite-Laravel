@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Casts\MoneyCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Shift extends Model
@@ -24,4 +25,9 @@ class Shift extends Model
         'invoice_paid' => 'boolean',
         'invoice_amount' => MoneyCast::class,
     ];
+
+    public function patientContacts(): HasMany
+    {
+        return $this->hasMany(PatientContact::class);
+    }
 }
