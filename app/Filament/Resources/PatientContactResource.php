@@ -37,7 +37,7 @@ class PatientContactResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'EMT CPC';
+    protected static ?string $navigationGroup = 'EMT';
 
     public static function form(Form $form): Form
     {
