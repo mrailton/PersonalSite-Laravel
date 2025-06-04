@@ -7,6 +7,7 @@ namespace App\Filament\Resources;
 use App\Enums\CPGOrganisation;
 use App\Filament\Resources\ShiftResource\Pages;
 use App\Models\Shift;
+use DateTime;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
@@ -30,6 +31,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ShiftResource extends Resource
 {
+    public const array paidShiftOrganisations = [
+        CPGOrganisation::MEDICORE->value,
+        CPGOrganisation::CODEBLUE->value,
+    ];
+
     protected static ?string $model = Shift::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -46,21 +52,52 @@ class ShiftResource extends Resource
                         DateTimePicker::make('start')
                             ->seconds(false)
                             ->live()
-                            ->afterStateUpdated(fn (Set $set, Get $get) => $set('end', $get('start'))),
+                            ->afterStateUpdated(function (Set $set, Get $get): void {
+                                $set('end', $get('start'));
+
+                                if ($get('paid_shift')) {
+                                    self::calculateInvoiceAmount($set, $get);
+                                }
+                            })
+                            ->required(),
                         DateTimePicker::make('end')
-                            ->seconds(false),
+                            ->seconds(false)
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, Get $get): void {
+                                if ($get('paid_shift')) {
+                                    self::calculateInvoiceAmount($set, $get);
+                                }
+                            })
+                            ->required(),
                         Select::make('organisation')
                             ->options(CPGOrganisation::class)
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, Get $get, ?string $state): void {
+                                $isPaid = in_array($state, self::paidShiftOrganisations);
+
+                                $set('paid_shift', $isPaid);
+
+                                if ($isPaid) {
+                                    self::calculateInvoiceAmount($set, $get);
+                                }
+
+                            })
                             ->required(),
                         Checkbox::make('paid_shift')
                             ->default(false)
-                            ->live(),
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, Get $get, bool $state): void {
+                                if ($state) {
+                                    self::calculateInvoiceAmount($set, $get);
+                                }
+                            }),
                         TextInput::make('invoice_amount')
-                            ->visible(fn (Get $get): bool => null !== $get('paid_shift') && $get('paid_shift')),
+                            ->numeric()
+                            ->visible(fn (Get $get): bool => (bool) $get('paid_shift')),
                         Checkbox::make('invoice_sent')
-                            ->visible(fn (Get $get): bool => null !== $get('paid_shift') && $get('paid_shift')),
+                            ->visible(fn (Get $get): bool => (bool) $get('paid_shift')),
                         Checkbox::make('invoice_paid')
-                            ->visible(fn (Get $get): bool => null !== $get('paid_shift') && $get('paid_shift')),
+                            ->visible(fn (Get $get): bool => (bool) $get('paid_shift')),
                         Textarea::make('notes')
                             ->rows(5)
                             ->nullable(),
@@ -143,5 +180,43 @@ class ShiftResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if ( ! $data['paid_shift']) {
+            $data['invoice_amount'] = null;
+        }
+
+        return $data;
+    }
+
+    private static function calculateInvoiceAmount(Set $set, Get $get): void
+    {
+        $organisation = $get('organisation');
+        $start = $get('start');
+        $end = $get('end');
+
+        if ( ! $start || ! $end) {
+            return;
+        }
+
+        $startDateTime = new DateTime($start);
+        $endDateTime = new DateTime($end);
+
+        $durationInSeconds = $endDateTime->getTimestamp() - $startDateTime->getTimestamp();
+        $durationInHours = $durationInSeconds / 3600;
+
+        $roundedDuration = ceil($durationInHours * 4) / 4;
+
+        $hourlyRate = match ($organisation) {
+            CPGOrganisation::MEDICORE->value => 15.00,
+            CPGOrganisation::CODEBLUE->value => 17.00,
+            default => 0.00,
+        };
+
+        $amount = $roundedDuration * $hourlyRate;
+
+        $set('invoice_amount', $amount);
     }
 }
