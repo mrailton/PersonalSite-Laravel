@@ -57,4 +57,9 @@ class PatientContactsRelationManager extends RelationManager
                 Action::make('view')->url(fn (PatientContact $record): string => PatientContactResource::getUrl('view', ['record' => $record])),
             ]);
     }
+
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
 }
