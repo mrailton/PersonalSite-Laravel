@@ -35,6 +35,7 @@ class ReflectivePracticeResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationLabel = 'Reflective Practice';
+
     protected static ?string $navigationGroup = 'EMT';
 
     public static function form(Form $form): Form
@@ -76,9 +77,9 @@ class ReflectivePracticeResource extends Resource
                         Fieldset::make('Contact Date')
                             ->schema([
                                 DatePicker::make('from')->default(now()->subYear()->month(11)->day(1)),
-                                DatePicker::make('to')->default(now()->month(10)->day(31))
+                                DatePicker::make('to')->default(now()->month(10)->day(31)),
                             ])
-                            ->columns(1)
+                            ->columns(1),
                     ])
                     ->query(fn (Builder $query, array $data) => $query
                         ->when(
