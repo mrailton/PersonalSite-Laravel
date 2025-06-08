@@ -121,6 +121,8 @@ class ShiftResource extends Resource
                     ->sortable(),
                 TextColumn::make('organisation')->label('Organisation'),
                 TextColumn::make('invoice_amount')->money('eur'),
+                IconColumn::make('paid_shift')
+                    ->boolean(),
                 IconColumn::make('invoice_sent')
                     ->boolean(),
                 IconColumn::make('invoice_paid')
