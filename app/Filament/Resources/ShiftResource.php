@@ -70,6 +70,7 @@ class ShiftResource extends Resource
                                 }
                             })
                             ->required(),
+                        TextInput::make('name'),
                         Select::make('organisation')
                             ->options(CPGOrganisation::class)
                             ->live()
@@ -115,6 +116,8 @@ class ShiftResource extends Resource
                     ->sortable(),
                 TextColumn::make('end')
                     ->dateTime('M d, Y H:i')
+                    ->sortable(),
+                TextColumn::make('name')
                     ->sortable(),
                 TextColumn::make('organisation')->label('Organisation'),
                 TextColumn::make('invoice_amount')->money('eur'),
