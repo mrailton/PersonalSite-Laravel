@@ -15,7 +15,7 @@ class Shift extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['start', 'end', 'organisation', 'paid_shift', 'invoice_amount', 'invoice_sent', 'invoice_paid', 'notes'];
+    protected $fillable = ['start', 'end', 'name', 'organisation', 'paid_shift', 'invoice_amount', 'invoice_sent', 'invoice_paid', 'notes'];
 
     protected $casts = [
         'start' => 'datetime',
