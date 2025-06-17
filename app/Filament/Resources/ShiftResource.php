@@ -160,7 +160,8 @@ class ShiftResource extends Resource
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('start', 'desc');
     }
 
     public static function getRelations(): array
