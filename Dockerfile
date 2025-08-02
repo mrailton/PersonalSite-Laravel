@@ -1,35 +1,47 @@
-# Stage 1: Node for asset building
-FROM node:22-alpine as node
+FROM serversideup/php:8.4-unit
 
-WORKDIR /app
-COPY package*.json vite.config.js ./
-COPY resources/ resources/
-COPY public/ public/
-RUN npm install && npm run build
+# Specify the NodeJS version
+ARG NODE_VERSION=22
 
-# Stage 2: PHP for Laravel
-FROM php:8.4-fpm
+# Allow HTTP and HTTPS.
+ENV SSL_MODE=mixed
 
-# System packages
-RUN apt-get update && apt-get install -y \
-    git curl unzip zip libonig-dev libxml2-dev libzip-dev libpng-dev \
-    && docker-php-ext-install pdo pdo_mysql zip
+# Switch to root so we can install NodeJS
+# to the base image
+USER root
 
-# Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Install the intl extension for translations
+RUN install-php-extensions exif
 
-WORKDIR /var/www
+# Install NodeJS -> remove this if you do not need NodeJS
+RUN apt-get update \
+    && apt-get install -y bash \
+    && curl -fsSL https://deb.nodesource.com/setup_$NODE_VERSION.x -o nodesource_setup.sh \
+    && bash nodesource_setup.sh \
+    && apt-get install -y nodejs \
+    && apt-get install -y jpegoptim optipng pngquant gifsicle libavif-bin \
+    && npm install -g svgo \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-# Copy Laravel app
-COPY . .
+# Switch back to non-privellage user www-data user
+USER www-data
 
-# Copy built assets
-COPY --from=node /app/public/build /var/www/public/build
+# Install production composer dependencies
+COPY --chown=www-data:www-data composer.json composer.lock ./
+RUN composer install --no-dev --prefer-dist --no-scripts --no-autoloader --no-progress --ignore-platform-reqs
 
-# Install PHP deps
-RUN composer install --no-dev --optimize-autoloader
+# Install node dependencies -> remove this if you do not need NodeJS
+COPY --chown=www-data:www-data package.json ./
+RUN npm install --frozen-lockfile \
+    && npm run build
 
-# Laravel permissions
-RUN chown -R www-data:www-data /var/www
+# Copy the app files to the container
+COPY --chown=www-data:www-data . .
 
-CMD php artisan migrate --force && php artisan config:cache && php-fpm
+# Autoload files
+RUN composer dump-autoload --optimize
+
+# Prepare the laravel app
+RUN php /var/www/html/artisan storage:link
