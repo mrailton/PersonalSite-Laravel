@@ -31,7 +31,8 @@ RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
     libzip-dev \
-    libicu-dev
+    libicu-dev \
+    default-mysql-client
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
