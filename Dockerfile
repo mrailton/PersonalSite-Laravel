@@ -1,46 +1,70 @@
-FROM serversideup/php:8.4-unit
+# Stage 1: Build assets
+FROM node:20-alpine AS assets-builder
+WORKDIR /app
 
-# Specify the NodeJS version
-ARG NODE_VERSION=22
+# Install PHP and Composer to get vendor assets needed for the build
+RUN apk add --no-cache php84 php84-common php84-iconv php84-gd php84-curl php84-xml php84-mysqli php84-imap php84-cgi php84-pdo php84-pdo_mysql php84-soap php84-posix php84-gettext php84-ldap php84-ctype php84-dom php84-simplexml php84-tokenizer php84-xmlwriter php84-zip php84-mbstring php84-bcmath php84-phar php84-openssl php84-session php84-fileinfo php84-intl php84-pdo_sqlite php84-pecl-redis curl composer
 
-# Allow HTTP and HTTPS.
-ENV SSL_MODE=mixed
+COPY composer.* ./
+RUN composer install --no-interaction --no-dev --no-scripts --no-autoloader --ignore-platform-reqs
 
-# Switch to root so we can install NodeJS
-# to the base image
-USER root
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
 
-# Install the intl extension for translations
-RUN install-php-extensions exif
+# Stage 2: Application
+FROM php:8.4-fpm-bullseye
 
-# Install NodeJS -> remove this if you do not need NodeJS
-RUN apt-get update \
-    && apt-get install -y bash \
-    && curl -fsSL https://deb.nodesource.com/setup_$NODE_VERSION.x -o nodesource_setup.sh \
-    && bash nodesource_setup.sh \
-    && apt-get install -y nodejs \
-    && apt-get install -y jpegoptim optipng pngquant gifsicle libavif-bin \
-    && npm install -g svgo \
-    && apt-get -y autoremove \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+# Set working directory
+WORKDIR /var/www/html
 
-# Switch back to non-privellage user www-data user
-USER www-data
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    nginx \
+    supervisor \
+    libzip-dev \
+    libicu-dev
 
-# Install production composer dependencies
-COPY --chown=www-data:www-data composer.json composer.lock ./
-RUN composer install --no-dev --prefer-dist --no-scripts --no-autoloader --no-progress --ignore-platform-reqs
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy the app files to the container
-COPY --chown=www-data:www-data . .
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl opcache \
+    && pecl install redis \
+    && docker-php-ext-enable redis
 
-# Install node dependencies -> remove this if you do not need NodeJS
-RUN npm install --frozen-lockfile \
-    && npm run build
+# Get latest Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Autoload files
-RUN composer dump-autoload --optimize
+# Copy existing application directory contents
+COPY . .
 
-# Prepare the laravel app
-RUN php /var/www/html/artisan storage:link
+# Copy built assets from Stage 1
+COPY --from=assets-builder /app/public/build ./public/build
+
+# Install dependencies
+RUN composer install --no-interaction --optimize-autoloader --no-dev --no-scripts
+
+# Setup configurations
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/php.ini /usr/local/etc/php/conf.d/app-php.ini
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+# Set permissions
+RUN chmod +x /usr/local/bin/entrypoint.sh \
+    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Expose port 80
+EXPOSE 80
+
+# Entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
